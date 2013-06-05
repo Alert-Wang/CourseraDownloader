@@ -59,7 +59,7 @@ class Course(object):
         urllib2.HTTPCookieProcessor(cj)
     ]
     opener = urllib2.build_opener(*handlers)
-    # 模拟浏览器，高速登陆页面我们是从首页referer过来的
+    # 模拟浏览器，告诉登陆页面我们是从首页refer过来的
     std_headers = {
             'Cookie': ('csrftoken=%s' % self.csrf_token),
             'Referer': 'https://www.coursera.org',
