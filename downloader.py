@@ -66,9 +66,9 @@ class Downloader(object):
       count += 1
 
 def main():
-  if len(sys.argv) != 5:
+  if len(sys.argv) != 3:
     # class name example "neuralnets-2012-001"
-    print 'usage : ./downloader.py download_dir username password class_name'
+    print 'usage : ./downloader.py download_dir class_name'
     return
   path = re.sub(r'/$','',sys.argv[1]) + "/"
   if not os.path.exists(path):
@@ -76,7 +76,8 @@ def main():
   print 'download dir : ', path
 
   # 账号和课程信息
-  c = Course(sys.argv[2], sys.argv[3], sys.argv[4])
+  from config import USER
+  c = Course(USER['username'], USER['password'], sys.argv[2])
   d = Downloader(c, path)
   d.fetchAll()
 

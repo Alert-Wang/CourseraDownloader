@@ -1,5 +1,8 @@
 ## Usage
-usage : ./downloader.py download_dir username password class_name
+
+1. 把config-sample.py重命名为config.py，把自己coursera的账号密码配置进去
+
+2. usage : ./downloader.py download_dir class_name
 
 **download-dir**: 你要把文件下载到哪个文件夹里，可使用绝对路径或相对路径
 

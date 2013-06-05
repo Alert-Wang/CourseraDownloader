@@ -110,12 +110,3 @@ class Course(object):
     print 'Login in success, cookie file: ', self.cookie_file
     self.__set_session()
     print 'Get session : ', self.session
-
-    
-
-def test():
-  c = Course("royguo1988@gmail.com", "56906950")
-  c.open("neuralnets-2012-001")
-
-if __name__ == '__main__':
-  test()
