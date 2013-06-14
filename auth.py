@@ -69,7 +69,7 @@ class Course(object):
             'email_address': self.username,
             'password': self.password
             }
-    # 把表单数据编码到form中
+    # 把表单数据编码到form中, formatted_data中有数据会自动使用POST提交
     formatted_data = urllib.urlencode(auth_data)
     req = urllib2.Request(self.auth_url, formatted_data, std_headers)
     # 发送请求，请求结束后会自动把cookie数据存放到cookie jar中
@@ -82,7 +82,7 @@ class Course(object):
     self.cookie_file = fn
 
   def __set_session(self):
-    """获得课程session，下载的时候需要"""  
+    """获得课程session，下载的时候需要"""
     target = urllib.quote_plus(self.__get_class_url())
     auth_redirector_url = 'https://class.coursera.org/'+self.class_name+'/auth/auth_redirector?type=login&subtype=normal&email=&visiting='+target
     print 'redirect url : ',auth_redirector_url

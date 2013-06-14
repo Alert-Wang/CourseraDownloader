@@ -1,5 +1,11 @@
-## Usage
+## Features
+---
+1. 多进程下载，命令行不再显示具体文件的下载进程，统一显示为未完成的任务个数
 
+2. 支持断点续传，第一次没有执行完成的话，第二次只需要指定相同的文件夹即可断点续传.
+
+## Usage
+---
 1. 把config-sample.py重命名为config.py，把自己coursera的账号密码配置进去
 
 2. usage : ./downloader.py download_dir class_name
@@ -11,7 +17,7 @@
 ![revolunet logo](https://raw.github.com/royguo/CourseraDownloader/master/demo.png "revolunet logo")
 
 ## Download
-
+---
 需要注意，必须要先在coursera上enroll课程才可以下载
 
 下载逻辑在downloader.py的main函数中，可以根据需要修改

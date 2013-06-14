@@ -8,6 +8,7 @@ import os
 import re
 import sys
 import subprocess
+import time
 
 class Downloader(object):
   """下载器,登陆后使用"""
@@ -18,12 +19,16 @@ class Downloader(object):
     self.links = []
     # 解析课程首页，获得链接信息
     self.parse_links()
+    # 监控子进程的状态
+    self.tasks = []
 
   def parse_links(self):
     html = 'lectures.html'
     # 下载课程首页，根据页面html抽取页面链接，应该有更好的方式实现...
-    cmd = 'curl https://class.coursera.org/'+self.course.class_name+'/lecture/index -k -# -L -o ' + html + ' --cookie "csrf_token=%s; session=%s"' % (self.course.csrf_token, self.course.session)
-    os.system(cmd)
+    cmd = ['curl', 'https://class.coursera.org/' + self.course.class_name+'/lecture/index', 
+           '-k', '-#','-L', '-o', html, 
+           '--cookie', 'csrf_token=%s; session=%s' % (self.course.csrf_token, self.course.session)]
+    subprocess.call(cmd)
     with open('lectures.html','r') as f:
       arr = re.findall(r'data-lecture-id="(\d+)"|class="lecture-link">\n(.*)</a>',f.read())
       i = 0
@@ -37,18 +42,22 @@ class Downloader(object):
 
   def download(self, url, target):
     if os.path.exists(target):
-      print target,' already exist, skip.'
-      return
-    print 'downloading : ', target
-    print 'url : ', url
+      print target,' already exist, continue...'
+    else:
+      print 'downloading : ', target
+    # print 'url : ', url
+
     # -k : allow curl connect ssl websites without certifications.
     # -# : display progress bar.
-    # -L : follow redirects
-    # -o : output file
+    # -L : follow redirects.
+    # -o : output file.
+    # -s : slient mode, don't show anything
+    # -C - : continue the downloading from last break point.
     # --cookie : String or file to read cookies from.
-    cmd = ['curl', url, '-k', '-#', '-L', '-o', target, '--cookie',
-           "csrf_token=%s; session=%s" % (self.course.csrf_token, self.course.session)]
-    subprocess.call(cmd)
+    cmd = ['curl', url, '-k','-s','-L','-C -', '-o', target, '--cookie',
+           'csrf_token=%s; session=%s' % (self.course.csrf_token, self.course.session)]
+    p = subprocess.Popen(cmd)
+    self.tasks.append(p)
 
   def fetchAll(self):
     # count作为文件名的前缀遍历所有链接
@@ -80,6 +89,16 @@ def main():
   c = Course(USER['username'], USER['password'], sys.argv[2])
   d = Downloader(c, path)
   d.fetchAll()
+  while True:
+    print 'reminding tasks : ', len(d.tasks)
+    for t in d.tasks:
+      if t.poll() == 0:
+        d.tasks.remove(t)
+    time.sleep(1)
 
 if __name__ == '__main__':
-  main()
+  try:
+    main()
+  except KeyboardInterrupt, e:
+    print 'downloader has been killed !'
+  
